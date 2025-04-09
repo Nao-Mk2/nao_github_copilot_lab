@@ -1,0 +1,1 @@
+GitHub CopilotのAgentモードで色々実験するときに使うリポジトリ。
