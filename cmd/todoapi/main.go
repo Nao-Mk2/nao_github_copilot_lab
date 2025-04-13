@@ -35,17 +35,21 @@ func main() {
 
 	// ルーティングの設定
 	mux := http.NewServeMux()
+	mux.HandleFunc(basePath+"/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			todoHandler.GetTodo(w, r)
+		default:
+			http.Error(w, "不正なメソッドです", http.StatusMethodNotAllowed)
+		}
+	})
+
 	mux.HandleFunc(basePath, func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			todoHandler.CreateTodo(w, r)
 		default:
-			// GETリクエスト（IDが必要）またはその他の不正なメソッドをチェック
-			if r.Method == http.MethodGet && len(r.URL.Path) > len(basePath)+1 {
-				todoHandler.GetTodo(w, r)
-			} else {
-				http.Error(w, "不正なメソッドまたはURLです", http.StatusMethodNotAllowed)
-			}
+			http.Error(w, "不正なメソッドまたはURLです", http.StatusMethodNotAllowed)
 		}
 	})
 
